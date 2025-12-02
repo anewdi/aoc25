@@ -4,23 +4,9 @@
 #include <pthread.h>
 #include <set>
 #include <string>
-#include <utility>
-#include <vector>
 
 class solution {
 private:
-  std::pair<std::string, std::string> getStartEndString(std::string in) {
-    int split = in.find('-');
-    std::string start = in.substr(0, split);
-    std::string end = in.substr(split + 1);
-
-    if (end[end.length() - 1] == '\n') {
-      end.pop_back();
-    }
-
-    return std::pair(start, end);
-  }
-
   void one(unsigned long start, unsigned long end, int n, unsigned long &sum) {
     if (n % 2) {
       return;
@@ -40,15 +26,11 @@ private:
   }
 
   void two(unsigned long start, unsigned long end, int n, unsigned long &sum) {
-    std::vector<int> factors;
-    for (int i = 1; i <= n / 2; ++i) {
-      if (n % i == 0) {
-        factors.push_back(i);
-      }
-    }
-
     std::set<unsigned long> nums;
-    for (auto fact : factors) {
+    for (int fact = 1; fact <= n / 2; ++fact) {
+      if (n % fact != 0) {
+        continue;
+      }
       unsigned long upperStart = start * std::pow(10, (fact - n));
       unsigned long upperEnd = end * std::pow(10, (fact - n));
 
@@ -66,7 +48,6 @@ private:
     }
 
     for (auto num : nums) {
-      std::cout << num << std::endl;
       sum += num;
     }
   }
@@ -105,7 +86,13 @@ public:
 
     std::string in;
     while (std::getline(input, in, ',')) {
-      auto [start, end] = getStartEndString(in);
+      int split = in.find('-');
+      std::string start = in.substr(0, split);
+      std::string end = in.substr(split + 1);
+
+      if (end[end.length() - 1] == '\n') {
+        end.pop_back();
+      }
 
       if (start.length() < end.length()) {
         std::string start1(end.length(), '0');
